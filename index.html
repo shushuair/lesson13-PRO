@@ -9,102 +9,91 @@
 		function Student(name,surname,bday){
 			this.name = name;
 			this.surname = surname;
-			this.birthday = bday;	
-			this.marks = new Array(30);
-			this.attendance = new Array(30);			
+			this.birthday = bday;
+			this.marks = new Array (30);
+			this.attendance = new Array (30);		
 		}
 		
 		Student.prototype.fullYears = function(){
 			let currentDate = new Date();
 			let bday = new Date(this.birthday);
 			let age = currentDate.getFullYear() - bday.getFullYear();
-			let month = currentDate.getMonth() - bday.getMonth();	
+			let month = currentDate.getMonth() - bday.getMonth();
 			
 			if (month < 0 || (month === 0 && currentDate.getDate() < bday.getDate())){
 				age--;
 			}
-			
-			return age;
+			return age;			
+		}
+		
+		Student.prototype.present = function(){
+			this.attendance.find((item,index) => {
+				if (item === undefined){
+					return this.attendance[index] = true;
+				}			
+			})		
 		};
 		
-		Student.prototype.present = function () {
-			this.attendance.find((item , index) => {
-				if(item === undefined){
-					return this.attendance[index] = true;
-				}
-			})	
-		};		
-
-		Student.prototype.absent = function () {
-			this.attendance.find((item , index) => {
-				if(item === undefined) {
-					return this.attendance.splice(index,1 , false);	
+		Student.prototype.absent = function(){
+			this.attendance.find((item,index) =>{
+				if (item === undefined){
+					return this.attendance.splice(index,1,false);
 				}
 			})	
 		};
-
-		Student.prototype.mark = function(mark) {
-			this.marks.find((item , index) => {
-				if( item === undefined && mark >= 0 && mark <= 10) {
-					return this.marks.splice(index , 1 , mark);
+		
+		Student.prototype.mark = function(mark){
+			this.marks.find((item,index) => {
+				if (item === undefined && mark >= 0 && mark <= 10){
+					return this.marks.splice(index,1,mark);
 				}
-			})
-		}
-
-		Student.prototype.middleMark = function() {
+			})		
+		};		
+		
+		Student.prototype.averageMark = function(){
 			let markLength = this.marks.filter(item => (item || 0));
-			if(markLength.length === 0) {
-				return 'нет оценок'
+				if (markLength.length === 0){
+					return 'No marks!';
+				}
+				return markLength.reduce((accum,item) => (accum += item)) / markLength.length;
+			};
+		
+		Student.prototype.averageAttendance = function(){
+			let averageLength = this.attendance.filter(item => item || !item).length;
+			if (averageLength === 0){
+				return 'You have not visited any lesson';
 			}
-			return markLength.reduce((accum , item) => accum += item) / markLength.length; 
-		}
-
-
-		Student.prototype.middleAttendance = function() {
-			let attendanceLength = this.attendance.filter(item => (item || !item)).length
-			if (attendanceLength === 0) {
-				return 'You did not visit any lesson';
-			}
-			return this.attendance.filter(item => item).length / attendanceLength;
-		}
-
-		Student.prototype.summary = function() {
-
-			if(this.middleMark() >= 9 && this.middleAttendance() >= 0.9) {
-				return 'Well done!'
-			} 
-			else if(this.middleMark() < 9 && this.middleAttendance() < 0.9) {
-				return "Shame on you!"
-			} 
-			else if((this.middleMark() < 9 || this.middleAttendance() < 0.9)) {
-				return "So so"
-			}		
-		}
-				
-		const studentMax = new Student('Max','Pain','1980/08/24');
+			return this.attendance.filter(item => item).length / averageLength;
+		};
+			
+		Student.prototype.summary = function(){
+			if (this.averageMark() >= 9 && this.averageAttendance() >= 0.9){
+				return 'Well done!';
+			} else if (this.averageMark() < 9 && this.averageAttendance() < 0.9){
+				return 'Shame on you';
+			} else if (this.averageMark() < 9 || this.averageAttendance() < 0.9){
+				return 'OK, but you can better!';
+			} 		
+		};
+		
+		
+		let studentMax = new Student('Max','Pain','1980/08/24');
 		console.log(studentMax);
 		console.log(studentMax.fullYears());
 		studentMax.present();
-		studentMax.present(); 
 		studentMax.absent();
 		studentMax.present();
 		studentMax.present();
 		studentMax.present();
-		studentMax.present();
-		studentMax.present();
+		studentMax.present();		
 		studentMax.mark(9);
+		studentMax.mark(10);
 		studentMax.mark(8);
-		studentMax.mark(7);
-		studentMax.mark(9);
-		studentMax.mark(9);		
-		console.log(studentMax.middleAttendance());
-		console.log(studentMax.middleMark());
+		studentMax.mark(10);
+		studentMax.mark(10);
+		console.log(studentMax.averageAttendance());
+		console.log(studentMax.averageMark());
 		console.log(studentMax.summary());
-		
-		
-		
-		
-		
 		
 		
 		
